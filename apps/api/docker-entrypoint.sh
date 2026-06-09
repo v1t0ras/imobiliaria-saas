@@ -10,13 +10,14 @@ while ! nc -z "$DB_HOST" "$DB_PORT"; do
   sleep 1
 done
 
-echo "Database is available. Running Prisma migrations (deploy)..."
-# Try migrate deploy, fallback to db push if migrations not present
-if npx prisma migrate deploy; then
+if [ -d prisma/migrations ] && find prisma/migrations -mindepth 1 -maxdepth 1 | read -r _; then
+  echo "Database is available. Running Prisma migrations (deploy)..."
+  npx prisma migrate deploy
   echo "Migrations applied"
 else
-  echo "No migrations to deploy or migrate failed; running prisma db push"
+  echo "No Prisma migrations found. Syncing schema with prisma db push..."
   npx prisma db push
+  echo "Schema pushed"
 fi
 
 # Optional seed if environment variable set

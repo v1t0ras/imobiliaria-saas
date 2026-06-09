@@ -30,6 +30,8 @@ cp .env.example .env
 bash scripts/deploy.sh
 ```
 
+Se você for mudar o usuário/senha do Postgres, faça isso antes do primeiro `up` ou recrie o volume `./postgres/data` depois da alteração. Caso contrário, o banco antigo mantém as credenciais iniciais.
+
 Validação depois do deploy:
 
 ```bash
@@ -42,6 +44,7 @@ Observações importantes:
 - O `docker-compose.yml` expõe apenas o `nginx` para fora; `api` e `petrus-web` ficam na rede interna.
 - A imagem do `apps/api` usa uma base Debian-slim para garantir compatibilidade com as bibliotecas nativas do Prisma (OpenSSL).
 - O `scripts/deploy.sh` cria `.env` a partir de `.env.example` se ele ainda não existir.
+- O arquivo `.env` precisa ter `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DATABASE_URL`, `PORT`, `NEXT_PUBLIC_API_URL`, `STORAGE_PATH` e `PRISMA_CLIENT_ENGINE_TYPE`.
 - Para produção, gere migrations em desenvolvimento e use `prisma migrate deploy` no VPS.
 
 ## Próximo passo

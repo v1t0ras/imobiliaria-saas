@@ -16,5 +16,6 @@
       "@contracts/*": ["packages/contracts/src/*"],
       "@ui/*": ["packages/ui/src/*"]
     }
+    
   }
 }
