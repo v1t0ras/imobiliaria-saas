@@ -9,6 +9,9 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/ .
+# Copia apenas o necessário para rodar em produção
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 EXPOSE 3000
-CMD ["npm","run","start"]
+CMD ["node", "server.js"]
