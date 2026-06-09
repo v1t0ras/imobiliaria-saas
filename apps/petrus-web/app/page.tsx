@@ -1,6 +1,6 @@
 const featuredProperties = [
   {
-    title: "Apartamento com 82m², 3 dormitórios no bairro Zona Nova",
+    title: "Apartamento com 82m², 3 dormitórios no bairro Zona Nova vitor testeste",
     location: "Capão da Canoa",
     bedrooms: "3 dorms",
     suites: "1 suíte",
