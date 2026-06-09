@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  active
+  inactive
+}
+
+enum PropertyStatus {
+  draft
+  published
+  archived
+}
+
+enum BrokerRole {
+  admin
+  broker
+}
+
+model Tenant {
+  id          String         @id @default(cuid())
+  name        String
+  slug        String         @unique
+  status      TenantStatus   @default(active)
+  domains     TenantDomain[]
+  properties  Property[]
+  brokers     Broker[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model TenantDomain {
+  id        String   @id @default(cuid())
+  host      String   @unique
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Property {
+  id          String         @id @default(cuid())
+  tenantId    String
+  tenant      Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title       String
+  slug        String
+  code        String         @unique
+  status      PropertyStatus @default(draft)
+  price       Int
+  city        String
+  neighborhood String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([tenantId, slug])
+}
+
+model Broker {
+  id        String     @id @default(cuid())
+  tenantId  String
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  role      BrokerRole @default(broker)
+  phone     String
+  email     String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}

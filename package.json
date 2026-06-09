@@ -1,0 +1,11 @@
+{
+  "name": "imobiliaria-saas",
+  "private": true,
+  "packageManager": "pnpm@9.12.1",
+  "scripts": {
+    "dev:petrus": "pnpm --filter petrus-web dev",
+    "build": "pnpm -r build",
+    "check": "pnpm -r check",
+    "lint": "pnpm -r lint"
+  }
+}

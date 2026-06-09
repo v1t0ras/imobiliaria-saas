@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: imobiliaria
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d imobiliaria"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - imobiliaria-net
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./storage/properties:/app/storage/properties
+    expose:
+      - "4000"
+    networks:
+      - imobiliaria-net
+
+  petrus-web:
+    build:
+      context: .
+      dockerfile: apps/petrus-web/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      api:
+        condition: service_started
+    expose:
+      - "3000"
+    networks:
+      - imobiliaria-net
+
+  nginx:
+    image: nginx:stable
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./storage/properties:/var/www/storage:ro
+    depends_on:
+      - petrus-web
+      - api
+    networks:
+      - imobiliaria-net
+
+networks:
+  imobiliaria-net:
+    driver: bridge

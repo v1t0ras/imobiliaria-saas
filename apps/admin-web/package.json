@@ -1,0 +1,10 @@
+{
+  "name": "admin-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Admin app placeholder'",
+    "build": "echo 'Admin build placeholder'",
+    "check": "echo 'Admin check placeholder'"
+  }
+}
